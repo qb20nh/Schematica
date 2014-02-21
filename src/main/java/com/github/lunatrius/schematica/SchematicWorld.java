@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ChunkProviderClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -76,7 +77,11 @@ public class SchematicWorld extends World {
 			this.tileEntities.addAll(tileEntities);
 			for (TileEntity tileEntity : this.tileEntities) {
 				tileEntity.worldObj = this;
-				tileEntity.validate();
+				try {
+					tileEntity.validate();
+				} catch (Exception e) {
+					Settings.logger.logSevereException(String.format("TileEntity validation for %s failed!", tileEntity.getClass()), e);
+				}
 			}
 		}
 		this.width = width;
@@ -138,7 +143,11 @@ public class SchematicWorld extends World {
 			TileEntity tileEntity = TileEntity.createAndLoadEntity((NBTTagCompound) tileEntitiesList.tagAt(i));
 			if (tileEntity != null) {
 				tileEntity.worldObj = this;
-				tileEntity.validate();
+				try {
+					tileEntity.validate();
+				} catch (Exception e) {
+					Settings.logger.logSevereException(String.format("TileEntity validation for %s failed!", tileEntity.getClass()), e);
+				}
 				this.tileEntities.add(tileEntity);
 			}
 		}
@@ -367,7 +376,7 @@ public class SchematicWorld extends World {
 
 	@Override
 	protected IChunkProvider createChunkProvider() {
-		return null;
+		return new ChunkProviderClient(this);
 	}
 
 	@Override
@@ -404,7 +413,11 @@ public class SchematicWorld extends World {
 		this.tileEntities.addAll(tileEntities);
 		for (TileEntity tileEntity : this.tileEntities) {
 			tileEntity.worldObj = this;
-			tileEntity.validate();
+			try {
+				tileEntity.validate();
+			} catch (Exception e) {
+				Settings.logger.logSevereException(String.format("TileEntity validation for %s failed!", tileEntity.getClass()), e);
+			}
 		}
 	}
 
