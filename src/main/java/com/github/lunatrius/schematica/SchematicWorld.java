@@ -203,7 +203,7 @@ public class SchematicWorld extends World {
 			} catch (Exception e) {
 				int pos = tileEntity.xCoord + (tileEntity.yCoord * this.length + tileEntity.zCoord) * this.width;
 				if (--count > 0) {
-					Block block = Block.blocksList[localBlocks[pos]];
+					Block block = getBlock(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
 					Settings.logger.logSevereException(String.format("Block %s[%d] with TileEntity %s failed to save! Replacing with bedrock...", block, block != null ? block.blockID : -1, tileEntity.getClass().getName()), e);
 				}
 				localBlocks[pos] = (byte) Block.bedrock.blockID;
