@@ -404,6 +404,10 @@ public class SchematicWorld extends World {
 		return block.isBlockSolidOnSide(this, x, y, z, side);
 	}
 
+	@Override
+	public void updateAllLightTypes(int x, int y, int z) {
+	}
+
 	public Block getBlock(int x, int y, int z) {
 		return Block.blocksList[getBlockId(x, y, z)];
 	}
