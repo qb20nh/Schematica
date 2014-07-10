@@ -4,6 +4,7 @@ import com.github.lunatrius.schematica.client.gui.GuiSchematicControl;
 import com.github.lunatrius.schematica.client.gui.GuiSchematicLoad;
 import com.github.lunatrius.schematica.client.gui.GuiSchematicSave;
 import com.github.lunatrius.schematica.client.renderer.RendererSchematicChunk;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.RenderItem;
@@ -18,7 +19,11 @@ import net.minecraft.world.ChunkCache;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector3f;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -204,14 +209,20 @@ public class Settings {
 						metadata[x - minX][y - minY][z - minZ] = this.minecraft.theWorld.getBlockMetadata(x, y, z);
 						tileEntity = this.minecraft.theWorld.getBlockTileEntity(x, y, z);
 						if (tileEntity != null) {
-							tileEntityNBT = new NBTTagCompound();
-							tileEntity.writeToNBT(tileEntityNBT);
+							try {
+								tileEntityNBT = new NBTTagCompound();
+								tileEntity.writeToNBT(tileEntityNBT);
 
-							tileEntity = TileEntity.createAndLoadEntity(tileEntityNBT);
-							tileEntity.xCoord -= minX;
-							tileEntity.yCoord -= minY;
-							tileEntity.zCoord -= minZ;
-							tileEntities.add(tileEntity);
+								tileEntity = TileEntity.createAndLoadEntity(tileEntityNBT);
+								tileEntity.xCoord -= minX;
+								tileEntity.yCoord -= minY;
+								tileEntity.zCoord -= minZ;
+								tileEntities.add(tileEntity);
+							} catch (Exception e) {
+								logger.logSevereException("Error while trying to save tile entity " + tileEntity + "!", e);
+								blocks[x - minX][y - minY][z - minZ] = Block.bedrock.blockID;
+								metadata[x - minX][y - minY][z - minZ] = 0;
+							}
 						}
 					}
 				}
